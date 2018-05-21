@@ -5,11 +5,11 @@ all: JavaParser.py JavaLexer.py
 
 
 JavaParser.py: Java.g
-	antlr3 Java.g
+	antlr4 Java.g
 
 
 JavaLexer.py: Java.g
-	antlr3 Java.g
+	antlr4 Java.g
 
 
 clean:

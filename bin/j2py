@@ -9,9 +9,10 @@ a file, translate it, and write it out.
 import sys
 from argparse import ArgumentParser, ArgumentTypeError
 from collections import defaultdict
-from logging import _levelNames as logLevels, exception, warning, info, basicConfig
+from logging import exception, warning, info, basicConfig
 from os import path, makedirs
 from time import time
+import codecs
 
 from java2python.compiler import Module, buildAST, transformAST
 from java2python.config import Config
@@ -19,22 +20,6 @@ from java2python.lib import escapes
 
 
 version = '0.5.1'
-
-
-def logLevel(value):
-    """ Returns a valid logging level or raises and exception. """
-    msg = 'invalid loglevel: %r'
-    try:
-        lvl = int(value)
-    except (ValueError, ):
-        name = value.upper()
-        if name not in logLevels:
-            raise ArgumentTypeError(msg % value)
-        lvl = logLevels[name]
-    else:
-        if lvl not in logLevels:
-            raise ArgumentTypeError(msg % value)
-    return lvl
 
 
 def configFromDir(inname, dirname):
@@ -107,18 +92,18 @@ def runTransform(options):
 
     try:
         if filein != '-':
-            source = open(filein).read()
+            codecs.open(filein,"r","utf-8").read()
         else:
             source = sys.stdin.read()
-    except (IOError, ), exc:
+    except IOError as exc:
         code, msg = exc.args[0:2]
-        print 'IOError: %s.' % (msg, )
+        print('IOError: %s.' % msg)
         return code
 
     timed['comp']
     try:
         tree = buildAST(source)
-    except (Exception, ), exc:
+    except Exception as exc:
         exception('exception while parsing')
         return 1
     timed['comp_finish']
@@ -142,16 +127,16 @@ def runTransform(options):
 
     if options.lexertokens:
         for idx, tok in enumerate(tree.parser.input.tokens):
-            print >> sys.stderr, '{0}  {1}'.format(idx, tok)
-        print >> sys.stderr
+            print(sys.stderr, '{0}  {1}'.format(idx, tok))
+        print(sys.stderr)
 
     if options.javaast:
         tree.dump(sys.stderr)
-        print >> sys.stderr
+        print(sys.stderr)
 
     if options.pytree:
         module.dumpRepr(sys.stderr)
-        print >> sys.stderr
+        print(sys.stderr)
 
     if not options.skipsource:
         if fileout == filedefault:
@@ -159,12 +144,12 @@ def runTransform(options):
         else:
             output = open(fileout, 'w')
         module.name = path.splitext(filein)[0] if filein != '-' else '<stdin>'
-        print >> output, source
+        print(output, source)
 
     if not options.skipcompile:
         try:
             compile(source, '<string>', 'exec')
-        except (SyntaxError, ), ex:
+        except SyntaxError as ex:
             warning('Generated source has invalid syntax. %s', ex)
         else:
             info('Generated source has valid syntax.')
@@ -225,7 +210,7 @@ def configScript(argv):
         default=False, action='store_true')
     add('-l', '--log-level', dest='loglevel',
         help='Set log level by name or value.',
-        default='WARN', type=logLevel)
+        default='WARN', type=str)
     add('-n', '--no-defaults', dest='includedefaults',
         help='Ignore default configuration module.',
         default=True, action='store_false')

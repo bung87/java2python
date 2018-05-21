@@ -47,10 +47,10 @@
 # instances.
 #
 
-from cStringIO import StringIO
+from io import StringIO
 
-from antlr3 import ANTLRStringStream as StringStream, CommonTokenStream as TokenStream
-from antlr3.tree import CommonTreeAdaptor, CommonTree
+from antlr4 import ANTLRStringStream as StringStream, CommonTokenStream as TokenStream
+from antlr4.tree import CommonTreeAdaptor, CommonTree
 
 from java2python.lib import colors
 
