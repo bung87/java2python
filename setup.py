@@ -10,7 +10,7 @@ Python source code.
 This version requires Python 2.7.
 """
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 from os import path, listdir
 
 
@@ -52,15 +52,7 @@ setup(
     keywords=['java', 'java2python', 'compiler'],
     classifiers=filter(None, classifiers.split('\n')),
 
-    packages=[
-        'java2python',
-        'java2python.compiler',
-        'java2python.config',
-        'java2python.lang',
-        'java2python.lib',
-        'java2python.mod',
-        'java2python.mod.include',
-        ],
+    packages = find_packages(),
 
     package_data={
         'java2python' : [
@@ -79,10 +71,7 @@ setup(
 
     data_files=[
         ('doc', doc_files()),
-        ],
-    dependency_links=[
-        "https://raw.githubusercontent.com/bung87/java2python/master/requirements.txt"
-    ],
+        ]
     # install_requires=['antlr_python_runtime==3.1.3'],
 
     )
