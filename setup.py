@@ -80,7 +80,9 @@ setup(
     data_files=[
         ('doc', doc_files()),
         ],
-
-    install_requires=['antlr_python_runtime==3.1.3'],
+    dependency_links=[
+        "https://raw.githubusercontent.com/bung87/java2python/master/requirements.txt"
+    ],
+    # install_requires=['antlr_python_runtime==3.1.3'],
 
     )
