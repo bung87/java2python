@@ -12,8 +12,8 @@
 # the compiler subpackage into multiple modules.  So-called patterns
 # are usually a sign of a bad design and/or language limitations, and
 # this case is no exception.
-
-from cStringIO import StringIO
+from __future__ import unicode_literals
+from StringIO import StringIO
 from functools import partial
 from itertools import chain, ifilter, imap
 
@@ -72,7 +72,6 @@ class FactoryTypeDetector(type):
             Factory.types[cls.factoryName] = cls
         except (AttributeError, ):
             pass
-
 
 class Base(object):
     """ Base -> base class for formatting Python output.
@@ -141,6 +140,9 @@ class Base(object):
         return ' '.join(parts)
 
     def __str__(self):
+        return unicode(self).encode('utf-8')
+
+    def __unicode__(self):
         """ Returns the Python source code representation of this template. """
         handlers = self.configHandlers('Output')
         return reduce(lambda v, func:func(self, v), handlers, self.dumps(-1))
@@ -320,7 +322,7 @@ class Expression(Base):
             parts.append(colors.white('tail:') + colors.black(self.tail))
         return ' '.join(parts)
 
-    def __str__(self):
+    def __unicode__(self):
         """ Returns the Python source code representation of this template. """
         return self.fs.format(left=self.left, right=self.right) + self.tail
 

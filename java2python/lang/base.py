@@ -47,7 +47,7 @@
 # instances.
 #
 
-from cStringIO import StringIO
+from StringIO import StringIO
 
 from antlr3 import ANTLRStringStream as StringStream, CommonTokenStream as TokenStream
 from antlr3.tree import CommonTreeAdaptor, CommonTree

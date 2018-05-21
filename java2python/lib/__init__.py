@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # java2python.lib -> common library bits.
-
+from __future__ import unicode_literals
 from functools import partial
 
 

@@ -6,12 +6,14 @@ This is all very ordinary.  We import the package bits, open and read
 a file, translate it, and write it out.
 
 """
+from __future__ import unicode_literals
 import sys
 from argparse import ArgumentParser, ArgumentTypeError
 from collections import defaultdict
 from logging import _levelNames as logLevels, exception, warning, info, basicConfig
 from os import path, makedirs
 from time import time
+from io import open
 
 from java2python.compiler import Module, buildAST, transformAST
 from java2python.config import Config
@@ -107,7 +109,7 @@ def runTransform(options):
 
     try:
         if filein != '-':
-            source = open(filein).read()
+            source = open(filein, encoding='utf-8').read()
         else:
             source = sys.stdin.read()
     except (IOError, ), exc:
@@ -157,9 +159,10 @@ def runTransform(options):
         if fileout == filedefault:
             output = sys.stdout
         else:
-            output = open(fileout, 'w')
+            output = open(fileout, 'w',encoding='utf-8')
         module.name = path.splitext(filein)[0] if filein != '-' else '<stdin>'
-        print >> output, source
+        # print >> output, source will raise TypeError: must be unicode, not str
+        output.write(source)
 
     if not options.skipcompile:
         try:
